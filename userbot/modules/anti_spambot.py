@@ -78,12 +78,12 @@ async def anti_spambot(welcm):
 
                     # Hata ayıklama. İlerideki durumlar için bırakıldı. ###
                     print(
-                        f"Katılan kullanıcı: {check_user.first_name} [ID: {check_user.id}]"
+                        f"Người dùng tham gia: {check_user.first_name} [ID: {check_user.id}]"
                     )
-                    print(f"Sohbet: {welcm.chat.title}")
-                    print(f"Zaman: {join_time}")
+                    print(f"Trò chuyện: {welcm.chat.title}")
+                    print(f"Thời gian: {join_time}")
                     print(
-                        f"Gönderdiği mesaj: {message.text}\n\n[Zaman: {message_date}]"
+                        f"Đã gửi tin nhắn: {message.text}\n\n[Thời gian: {message_date}]"
                     )
                     ##############################################
 
@@ -93,7 +93,7 @@ async def anti_spambot(welcm):
                         data = r.json()
                     except BaseException:
                         print(
-                            "CAS kontrolü başarısız, eski anti_spambot kontrolüne dönülüyor."
+                            "Kiểm tra CAS không thành công, hoàn nguyên về kiểm tra anti_spambot cũ."
                         )
                         data = None
                         pass
@@ -102,19 +102,19 @@ async def anti_spambot(welcm):
                         reason = f"[Combot Anti Spam tarafından banlandı.](https://combot.org/cas/query?u={check_user.id})"
                         spambot = True
                     elif "t.cn/" in message.text:
-                        reason = "`t.cn` URL'leri tespit edildi."
+                        reason = "`t.cn` đã phát hiện các URL."
                         spambot = True
                     elif "t.me/joinchat" in message.text:
-                        reason = "Potansiyel reklam mesajı"
+                        reason = "Thông điệp quảng cáo tiềm năng"
                         spambot = True
                     elif message.fwd_from:
-                        reason = "Başkasından iletilen mesaj"
+                        reason = "Tin nhắn từ người khác"
                         spambot = True
                     elif "?start=" in message.text:
-                        reason = "Telegram botu `start` linki"
+                        reason = "Liên kết bắt đầu từ bot Telegram"
                         spambot = True
                     elif "bit.ly/" in message.text:
-                        reason = "`bit.ly` URL'leri tespit edildi."
+                        reason = "`bit.ly` URL được phát hiện."
                         spambot = True
                     else:
                         if check_user.first_name in ("Bitmex", "Promotion",
@@ -123,11 +123,11 @@ async def anti_spambot(welcm):
                                                      "Duyuru", "Duyurular"
                                                      "Bilgilendirme", "Bilgilendirmeler"):
                             if check_user.last_name == "Bot":
-                                reason = "Bilinen SpamBot"
+                                reason = "SpamBot đã biết"
                                 spambot = True
 
                     if spambot:
-                        print(f"Potansiyel Spam Mesajı: {message.text}")
+                        print(f"Thư rác tiềm ẩn: {message.text}")
                         await message.delete()
                         break
 
@@ -141,19 +141,19 @@ async def anti_spambot(welcm):
                     if ANTI_SPAMBOT_SHOUT:
                         await welcm.reply(
                             "@admins\n"
-                            "`ANTI SPAMBOT TESPİT EDİLDİ!\n"
-                            "BU KULLANICI BENİM SPAMBOT ALGORİTMALARIMLA EŞLEŞİYOR!`"
-                            f"SEBEP: {reason}")
+                            "`ANTI SPAMBOT ĐÃ PHÁT HIỆN!\n"
+                            "NGƯỜI DÙNG NÀY PHÙ HỢP VỚI THUẬT TOÁN SPAMBOT CỦA TÔI!`"
+                            f"LÝ DO: {reason}")
                         kicked = False
                         reported = True
                 else:
                     try:
 
                         await welcm.reply(
-                            "`Potansiyel Spambot Tespit Edildi !!`\n"
-                            f"`SEBEP:` {reason}\n"
-                            "Şu anlık gruptan kickleniyor, bu ID ilerideki durumlar için kaydedilecek.\n"
-                            f"`KULLANICI:` [{check_user.first_name}](tg://user?id={check_user.id})"
+                            "`Đã phát hiện ra Spambot tiềm năng!!`\n"
+                            f"`LÝ DO:` {reason}\n"
+                            "Bắt đầu từ nhóm bây giờ, ID này sẽ được lưu cho các trường hợp trong tương lai.\n"
+                            f"`NGƯỜI DÙNG:` [{check_user.first_name}](tg://user?id={check_user.id})"
                         )
 
                         await welcm.client.kick_participant(
@@ -187,7 +187,7 @@ async def anti_spambot(welcm):
 
 CMD_HELP.update({
     'anti_spambot':
-    "Kullanım: Bu modül config.env dosyasında ya da env değeri ile etkinleştirilmişse,\
-        \neğer bu spamcılar UserBot'un anti-spam algoritmasıyla eşleşiyorsa, \
-        \nbu modül gruptaki spamcıları gruptan yasaklar (ya da adminlere bilgi verir)."
+    "Cách sử dụng: Nếu mô-đun này được bật trong tệp config.env hoặc với giá trị env,\
+        \nnếu những người gửi thư rác này phù hợp với thuật toán chống thư rác của UserBot, \
+        \nmô-đun này cấm những người gửi thư rác khỏi nhóm (hoặc thông báo cho quản trị viên)."
 })
